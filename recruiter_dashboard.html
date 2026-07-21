@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recruiter Dashboard - Akshu Career</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="./recruiter_dashboard.css">
+</head>
+<body class="bg-slate-50 h-screen flex overflow-hidden font-sans text-slate-800">
+
+    <!-- COLLAPSIBLE SIDEBAR -->
+    <aside id="sidebar" class="sidebar-expanded bg-slate-900 text-white flex flex-col shadow-2xl z-20 transition-all duration-300">
+        
+        <div class="sidebar-header-container h-[88px] flex items-center px-4 border-b border-slate-800 overflow-hidden shrink-0">
+            <button onclick="toggleSidebar()" class="toggle-btn p-2 text-slate-400 hover:text-blue-400 hover:bg-slate-800 rounded-lg transition-colors focus:outline-none shrink-0 mr-3">
+                <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+            </button>
+            <h2 class="text-2xl font-black tracking-tight text-blue-400 hide-on-collapse whitespace-nowrap">Akshu<span class="text-white">Career</span></h2>
+        </div>
+        
+        <nav class="flex-1 p-4 space-y-2 overflow-hidden">
+            <a href="#" class="nav-item flex items-center gap-3 bg-blue-600 text-white px-4 py-3 rounded-lg shadow-md transition-all hover:bg-blue-700">
+                <svg class="w-6 h-6 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+                <span class="hide-on-collapse font-semibold whitespace-nowrap">My Candidates</span>
+            </a>
+            <a href="#" class="nav-item flex items-center gap-3 bg-transparent text-slate-400 px-4 py-3 rounded-lg transition-all hover:bg-slate-800 hover:text-white">
+                <svg class="w-6 h-6 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"></path></svg>
+                <span class="hide-on-collapse font-semibold whitespace-nowrap">All Candidates</span>
+            </a>
+        </nav>
+        
+        <div class="p-4 border-t border-slate-800 bg-slate-950 overflow-hidden">
+            <p id="recruiter-name-display" class="hide-on-collapse text-sm font-semibold mb-3 text-slate-300 px-2 text-center">ID: ...</p>
+            <button onclick="logout()" class="nav-item w-full flex items-center justify-center gap-2 bg-red-500/10 hover:bg-red-500 text-red-500 hover:text-white border border-red-500/50 px-4 py-2.5 rounded-lg text-sm font-bold transition-all group">
+                <svg class="w-5 h-5 flex-shrink-0 group-hover:text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
+                <span class="hide-on-collapse whitespace-nowrap">Log Out</span>
+            </button>
+        </div>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="flex-1 flex flex-col h-full overflow-hidden relative transition-all duration-300">
+        
+        <header class="bg-white border-b border-slate-200 px-8 py-5 flex justify-between items-center z-10">
+            <div>
+                <h1 class="text-2xl font-bold text-slate-800">Candidate Directory</h1>
+                <p class="text-sm text-slate-500 mt-1">Manage, track, and update your recruitment pipeline.</p>
+            </div>
+            <button onclick="openModal('addCandidateModal')" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2.5 px-5 rounded-lg shadow-lg shadow-blue-600/30 transition-all transform hover:-translate-y-0.5 flex items-center gap-2">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                <span class="hidden md:inline">Add Candidate</span>
+            </button>
+        </header>
+
+        <div class="flex-1 p-8 overflow-y-auto custom-scrollbar">
+            <!-- UPDATED DYNAMIC METRIC CARDS -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                <!-- Total -->
+                <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 flex items-center gap-4">
+                    <div class="p-4 bg-blue-50 text-blue-600 rounded-lg">
+                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+                    </div>
+                    <div>
+                        <p class="text-sm font-semibold text-slate-500 uppercase tracking-wider">Total Candidates</p>
+                        <p id="metric-total" class="text-3xl font-black text-slate-800 mt-1">0</p>
+                    </div>
+                </div>
+                <!-- Selected -->
+                <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 flex items-center gap-4">
+                    <div class="p-4 bg-emerald-50 text-emerald-600 rounded-lg">
+                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    </div>
+                    <div>
+                        <p class="text-sm font-semibold text-slate-500 uppercase tracking-wider">Selected</p>
+                        <p id="metric-selected" class="text-3xl font-black text-slate-800 mt-1">0</p>
+                    </div>
+                </div>
+                <!-- Rejected -->
+                <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 flex items-center gap-4">
+                    <div class="p-4 bg-rose-50 text-rose-600 rounded-lg">
+                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    </div>
+                    <div>
+                        <p class="text-sm font-semibold text-slate-500 uppercase tracking-wider">Rejected</p>
+                        <p id="metric-rejected" class="text-3xl font-black text-slate-800 mt-1">0</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- DATA TABLE -->
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+                <div class="overflow-x-auto custom-scrollbar pb-2">
+                    <table class="w-full text-left whitespace-nowrap min-w-max">
+                        <thead class="bg-slate-50 border-b border-slate-200">
+                            <tr>
+                                <th class="px-4 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Code</th>
+                                <th class="px-4 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Candidate & Contact</th>
+                                <th class="px-4 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Profile & Lang</th>
+                                <th class="px-4 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Company & Date</th>
+                                <th class="px-4 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Remarks</th>
+                                <th class="px-4 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Status</th>
+                                <th class="px-4 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider text-right">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="candidate-table-body" class="divide-y divide-slate-100 text-sm">
+                            <!-- Rows injected by JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- 1. ADD CANDIDATE MODAL -->
+    <div id="addCandidateModal" class="modal-overlay hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center z-50">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-4xl mx-4 max-h-[90vh] flex flex-col transform transition-all modal-content">
+            <div class="px-8 py-5 border-b border-slate-100 flex justify-between items-center bg-slate-50/50 rounded-t-2xl">
+                <h3 class="text-xl font-bold text-slate-800">Register New Candidate</h3>
+                <button type="button" onclick="closeModal('addCandidateModal')" class="text-slate-400 hover:text-red-500 bg-white shadow-sm p-1 rounded-full transition-colors">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
+            </div>
+            
+            <form id="add-candidate-form" onsubmit="submitNewCandidate(event)" class="p-8 overflow-y-auto custom-scrollbar">
+                <h4 class="text-sm font-bold text-blue-600 uppercase tracking-wider mb-4">Basic Information</h4>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+                    <div><label class="block text-sm font-semibold text-slate-700 mb-2">Full Name *</label><input type="text" id="add-name" required class="w-full border rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-blue-500 outline-none"></div>
+                    <div><label class="block text-sm font-semibold text-slate-700 mb-2">Phone Number *</label><input type="text" id="add-phone" required class="w-full border rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-blue-500 outline-none"></div>
+                    <div><label class="block text-sm font-semibold text-slate-700 mb-2">Email Address *</label><input type="email" id="add-email" required class="w-full border rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-blue-500 outline-none"></div>
+                    <div><label class="block text-sm font-semibold text-slate-700 mb-2">Applied Profile *</label><input type="text" id="add-profile" required class="w-full border rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-blue-500 outline-none"></div>
+                    <div><label class="block text-sm font-semibold text-slate-700 mb-2">Language Known *</label><input type="text" id="add-language" required class="w-full border rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-blue-500 outline-none"></div>
+                    <div>
+                        <label class="block text-sm font-semibold text-slate-700 mb-2">Gender *</label>
+                        <select id="add-gender" required class="w-full border rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-blue-500 outline-none bg-white"><option>Male</option><option>Female</option><option>Other</option></select>
+                    </div>
+                </div>
+
+                <h4 class="text-sm font-bold text-blue-600 uppercase tracking-wider mb-4 border-t border-slate-100 pt-6">Selection Details</h4>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                    <div><label class="block text-sm font-semibold text-slate-700 mb-2">Company Name</label><input type="text" id="add-company" class="w-full border rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-blue-500 outline-none"></div>
+                    <div><label class="block text-sm font-semibold text-slate-700 mb-2">Selection Date</label><input type="date" id="add-selection-date" class="w-full border rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-blue-500 outline-none text-slate-600"></div>
+                </div>
+                <div><label class="block text-sm font-semibold text-slate-700 mb-2">Initial Remarks</label><textarea id="add-remarks" rows="2" class="w-full border rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-blue-500 outline-none"></textarea></div>
+                
+                <div class="mt-8 flex justify-end gap-3 pt-6 border-t border-slate-100">
+                    <button type="button" onclick="closeModal('addCandidateModal')" class="px-6 py-2.5 rounded-lg text-slate-600 font-semibold hover:bg-slate-100">Cancel</button>
+                    <button type="submit" class="px-6 py-2.5 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 shadow-md">Save Candidate</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- 2. VIEW CANDIDATE MODAL (EYE LOGO) -->
+    <!-- (Code remains the same as the previous step) -->
+    <div id="viewCandidateModal" class="modal-overlay hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center z-50">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-2xl mx-4 modal-content overflow-hidden">
+            <div class="bg-blue-600 px-8 py-5 flex justify-between items-center text-white">
+                <div>
+                    <h3 class="text-xl font-bold" id="view-name">Candidate Name</h3>
+                    <p class="text-blue-200 text-sm font-mono mt-1" id="view-code">CAN-000</p>
+                </div>
+                <button type="button" onclick="closeModal('viewCandidateModal')" class="text-white hover:text-blue-200 bg-blue-700 p-2 rounded-full transition-colors">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
+            </div>
+            
+            <div class="p-8">
+                <div class="grid grid-cols-2 gap-y-6 gap-x-4">
+                    <div><p class="text-xs text-slate-400 font-bold uppercase tracking-wider">Phone Number</p><p class="text-slate-800 font-medium mt-1" id="view-phone"></p></div>
+                    <div><p class="text-xs text-slate-400 font-bold uppercase tracking-wider">Email Address</p><p class="text-slate-800 font-medium mt-1" id="view-email"></p></div>
+                    <div><p class="text-xs text-slate-400 font-bold uppercase tracking-wider">Applied Profile</p><p class="text-slate-800 font-medium mt-1" id="view-profile"></p></div>
+                    <div><p class="text-xs text-slate-400 font-bold uppercase tracking-wider">Language</p><p class="text-slate-800 font-medium mt-1" id="view-language"></p></div>
+                    <div><p class="text-xs text-slate-400 font-bold uppercase tracking-wider">Gender</p><p class="text-slate-800 font-medium mt-1" id="view-gender"></p></div>
+                    <div><p class="text-xs text-slate-400 font-bold uppercase tracking-wider">Current Status</p><p class="text-slate-800 font-bold mt-1 text-blue-600" id="view-status"></p></div>
+                    
+                    <div class="col-span-2 border-t border-slate-100 pt-4 mt-2">
+                        <p class="text-xs text-slate-400 font-bold uppercase tracking-wider mb-2">Selection Details</p>
+                        <div class="flex gap-8">
+                            <div><span class="text-sm text-slate-500">Company:</span> <span class="font-medium text-slate-800 ml-1" id="view-company"></span></div>
+                            <div><span class="text-sm text-slate-500">Date:</span> <span class="font-medium text-slate-800 ml-1" id="view-date"></span></div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-span-2 bg-slate-50 p-4 rounded-lg mt-2">
+                        <p class="text-xs text-slate-400 font-bold uppercase tracking-wider mb-1">Remarks</p>
+                        <p class="text-slate-700 text-sm italic" id="view-remarks"></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 3. EDIT / DELETE CANDIDATE MODAL -->
+    <div id="editCandidateModal" class="modal-overlay hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center z-50">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-4xl mx-4 max-h-[90vh] flex flex-col transform transition-all modal-content">
+            <div class="px-8 py-5 border-b border-slate-100 flex justify-between items-center bg-slate-50/50 rounded-t-2xl">
+                <h3 class="text-xl font-bold text-slate-800">Edit Candidate Details</h3>
+                <button type="button" onclick="closeModal('editCandidateModal')" class="text-slate-400 hover:text-red-500 bg-white shadow-sm p-1 rounded-full transition-colors">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
+            </div>
+            
+            <form id="edit-candidate-form" onsubmit="saveCandidateEdit(event)" class="p-8 overflow-y-auto custom-scrollbar">
+                <input type="hidden" id="edit-id"> 
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+                    <div><label class="block text-sm font-semibold text-slate-700 mb-2">Full Name *</label><input type="text" id="edit-name" required class="w-full border rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-blue-500 outline-none"></div>
+                    <div><label class="block text-sm font-semibold text-slate-700 mb-2">Phone Number *</label><input type="text" id="edit-phone" required class="w-full border rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-blue-500 outline-none"></div>
+                    <div><label class="block text-sm font-semibold text-slate-700 mb-2">Email Address *</label><input type="email" id="edit-email" required class="w-full border rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-blue-500 outline-none"></div>
+                    <div><label class="block text-sm font-semibold text-slate-700 mb-2">Applied Profile *</label><input type="text" id="edit-profile" required class="w-full border rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-blue-500 outline-none"></div>
+                    <div><label class="block text-sm font-semibold text-slate-700 mb-2">Language Known *</label><input type="text" id="edit-language" required class="w-full border rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-blue-500 outline-none"></div>
+                    <div>
+                        <!-- UPDATED TO ONLY 3 STATUSES -->
+                        <label class="block text-sm font-semibold text-slate-700 mb-2">Status</label>
+                        <select id="edit-status" class="w-full border rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-blue-500 outline-none bg-white">
+                            <option value="Pending">Pending</option>
+                            <option value="Selected">Selected</option>
+                            <option value="Rejected">Rejected</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                    <div><label class="block text-sm font-semibold text-slate-700 mb-2">Company Name</label><input type="text" id="edit-company" class="w-full border rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-blue-500 outline-none"></div>
+                    <div><label class="block text-sm font-semibold text-slate-700 mb-2">Selection Date</label><input type="date" id="edit-selection-date" class="w-full border rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-blue-500 outline-none"></div>
+                </div>
+                <div><label class="block text-sm font-semibold text-slate-700 mb-2">Remarks</label><textarea id="edit-remarks" rows="2" class="w-full border rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-blue-500 outline-none"></textarea></div>
+                
+                <div class="mt-8 flex justify-between items-center pt-6 border-t border-slate-100">
+                    <button type="button" onclick="deleteCandidateFromEdit()" class="flex items-center gap-2 px-4 py-2.5 rounded-lg text-red-600 font-semibold hover:bg-red-50 transition-colors">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                        Delete Candidate
+                    </button>
+                    <div class="flex gap-3">
+                        <button type="button" onclick="closeModal('editCandidateModal')" class="px-6 py-2.5 rounded-lg text-slate-600 font-semibold hover:bg-slate-100">Cancel</button>
+                        <button type="submit" class="px-6 py-2.5 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 shadow-md">Update Candidate</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="./recruiter_dashboard.js"></script>
+</body>
+</html>
